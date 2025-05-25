@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { sql } from './config/db.js';
+import ratelimiter from './middleware/rateLimiter.js';
 
 dotenv.config();
 
@@ -8,6 +9,7 @@ dotenv.config();
 const app = express();
 
 // middleware
+app.use(ratelimiter);
 app.use(express.json());
 
 const PORT = process.env.PORT || 5001;
@@ -30,6 +32,11 @@ async function initDB() {
         process.exit(1);
     }
 }
+
+// Home route
+app.get('/', (req, res) => {
+    res.send("Welcome to the Expense Tracker");
+});
 
 // API endpoint to get transactions by userId
 app.get("/api/transactions/:userId", async (req, res) => {
