@@ -2,7 +2,9 @@ import ratelimit from "../config/upstash.js";
 
 const ratelimiter = async(req, res, next) => {
     try {
-        const {success} = await ratelimit.limit("my-rate-limit"); 
+        // Check if the request is coming from a valid IP address
+        const ip = req.ip;
+        const {success} = await ratelimit.limit(ip); 
 
         if (!success) {
             return res.status(429).json({
